@@ -1,5 +1,8 @@
 #include<stdio.h>
 #include<malloc.h>
+#define bool char
+#define true 1
+#define false 0
 struct ListNode
 {
 	int val;
@@ -31,7 +34,7 @@ void printList(struct ListNode *l1)
 			p = p->next;
 		}else
 			break;
-}}
+	}}
 struct ListNode* addTwoNumbers(struct ListNode *l1,struct ListNode* l2)
 {
 	struct ListNode *result = malloc(sizeof(struct ListNode));
@@ -59,7 +62,7 @@ struct ListNode* addTwoNumbers(struct ListNode *l1,struct ListNode* l2)
 		struct ListNode *node = malloc(sizeof(struct ListNode));
 		node->next = NULL;
 		node->val = 0;
-		
+
 		node->val = add % 10;
 		add = add / 10;
 
@@ -68,6 +71,87 @@ struct ListNode* addTwoNumbers(struct ListNode *l1,struct ListNode* l2)
 	}
 
 	return result->next;
+}
+struct ListNode* addTwoNumbers2(struct ListNode* l1, struct ListNode* l2) {
+	struct ListNode *start_one = l1;
+	struct ListNode *start_two = l2;
+
+	bool use_one = false;
+	short counter = 0;
+	while (l1 && l2) {
+		l1->val += l2->val + counter;
+		if (l1->val > 9) {
+			l1->val -= 10;
+			counter = 1;
+
+		} else {
+			counter = 0;
+
+		}
+		l2->val = l1->val;
+
+		l1 = l1->next;
+		l2 = l2->next;
+
+	}
+
+	while (counter) {
+		if (l1) {
+			l1->val += counter;
+			if (l1->val > 9) {
+				l1->val -= 10;
+				l1 = l1->next;
+				use_one = true;
+				counter = 1;
+
+			} else {
+				counter = 0;
+
+			}
+
+		} else if (l2) {
+			l2->val += counter;
+			if (l2->val > 9) {
+				l2->val -= 10;
+				l2 = l2->next;
+				counter = 1;
+
+			} else {
+				counter = 0;
+
+			}
+
+		} else if (!use_one) {
+			counter = 0;
+			struct ListNode *empty = start_one;
+			empty->val = 1;
+			empty->next = NULL;
+			start_one = start_two;
+			while (start_one->next) {
+				start_one = start_one->next;
+
+			}
+			start_one->next = empty;
+
+		} else {
+			counter = 0;
+			struct ListNode *empty = start_two;
+			empty->val = 1;
+			empty->next = NULL;
+			start_two = start_one;
+			while (start_two->next) {
+				start_two = start_two->next;
+
+			}
+			start_two->next = empty;
+
+		}
+
+	}
+
+	if (l1 || use_one) { return start_one;  }
+	return start_two;
+
 }
 int main(){
 	struct ListNode *l1 = malloc(sizeof(struct ListNode));
